@@ -20,12 +20,7 @@ fn main() {
     let c_bindings = bindgen::Builder::default()
         // The input header we would like to generate
         // bindings for.
-        .header(
-            include_path
-                .join("interfaces")
-                .join("highs_c_api.h")
-                .to_string_lossy(),
-        )
+        .header(include_path.join("interfaces").join("highs_c_api.h").to_string_lossy())
         .clang_args(&[
             &format!("-I{}", include_path.to_string_lossy()),
             &format!("-I{}", src_path.to_string_lossy()),
@@ -44,7 +39,7 @@ fn main() {
         .write_to_file(out_path.join("c_bindings.rs"))
         .expect("Couldn't write bindings!");
 
-    println!("cargo:rustc-link-search=native={}/lib", dst.display());
+    println!("cargo:rustc-link-search=native={}/lib64", dst.display());
     println!("cargo:rustc-link-lib=static=highs");
     let target = env::var("TARGET").unwrap();
     let apple = target.contains("apple");
@@ -55,6 +50,7 @@ fn main() {
     } else if linux {
         println!("cargo:rustc-link-lib=dylib=stdc++");
     }
+    println!("cargo:rustc-link-lib=dylib=z");
     if apple {
         println!("cargo:rustc-link-lib=dylib=omp");
     } else if !windows {
