@@ -39,6 +39,7 @@ fn main() {
         .write_to_file(out_path.join("c_bindings.rs"))
         .expect("Couldn't write bindings!");
 
+    println!("cargo:rustc-link-search=native={}/lib", dst.display());
     println!("cargo:rustc-link-search=native={}/lib64", dst.display());
     println!("cargo:rustc-link-lib=static=highs");
     let target = env::var("TARGET").unwrap();
